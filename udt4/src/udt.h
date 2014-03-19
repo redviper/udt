@@ -47,6 +47,9 @@ written by
    #include <sys/socket.h>
    #include <netinet/in.h>
 #else
+   #ifdef WIN32_LEAN_AND_MEAN
+      #include <winsock2.h>
+   #endif
    #ifdef __MINGW__
       #include <stdint.h>
       #include <ws2tcpip.h>
