@@ -298,6 +298,8 @@ private: // Options
    int m_iRcvTimeOut;                           // receiving timeout in milliseconds
    bool m_bReuseAddr;				// reuse an exiting port or not, for UDP multiplexer
    int64_t m_llMaxBW;				// maximum data transfer rate (threshold)
+   int m_iConnectTimeOut;                       // Connect timeout in milliseconds.
+   int m_iRendezvousConnectTimeOut;             // Rendezvous connect timeout in milliseconds.
 
 private: // congestion control
    CCCVirtualFactory* m_pCCFactory;             // Factory class to create a specific CC instance

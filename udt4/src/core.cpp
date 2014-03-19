@@ -116,6 +116,8 @@ CUDT::CUDT()
    m_iRcvTimeOut = -1;
    m_bReuseAddr = true;
    m_llMaxBW = -1;
+   m_iConnectTimeOut = 3000;
+   m_iRendezvousConnectTimeOut = m_iConnectTimeOut*10;
 
    m_pCCFactory = new CCCFactory<CUDTCC>;
    m_pCC = NULL;
@@ -345,7 +347,15 @@ void CUDT::setOpt(UDTOpt optName, const void* optval, int)
    case UDT_MAXBW:
       m_llMaxBW = *(int64_t*)optval;
       break;
-    
+
+   case UDT_CONNECTTIMEO:
+      m_iConnectTimeOut = *(int*)optval;
+      break;
+
+   case UDT_RENDEZVOUSCONNECTTIMEO:
+      m_iRendezvousConnectTimeOut = *(int*)optval;
+      break;
+
    default:
       throw CUDTException(5, 0, 0);
    }
@@ -476,6 +486,16 @@ void CUDT::getOpt(UDTOpt optName, void* optval, int& optlen)
       optlen = sizeof(int32_t);
       break;
 
+   case UDT_CONNECTTIMEO:
+      *(int*)optval = m_iConnectTimeOut;
+      optlen = sizeof(int);
+      break;
+
+   case UDT_RENDEZVOUSCONNECTTIMEO:
+      *(int*)optval = m_iRendezvousConnectTimeOut;
+      optlen = sizeof(int);
+      break;
+
    default:
       throw CUDTException(5, 0, 0);
    }
@@ -589,9 +609,10 @@ void CUDT::connect(const sockaddr* serv_addr)
 
    // register this socket in the rendezvous queue
    // RendezevousQueue is used to temporarily store incoming handshake, non-rendezvous connections also require this function
-   uint64_t ttl = 3000000;
-   if (m_bRendezvous)
-      ttl *= 10;
+   uint64_t ttl = m_iConnectTimeOut * 1000ULL;
+   if (m_bRendezvous) 
+       ttl = m_iRendezvousConnectTimeOut * 1000ULL;
+   
    ttl += CTimer::getTime();
    m_pRcvQueue->registerConnector(m_SocketID, this, m_iIPversion, serv_addr, ttl);
 
