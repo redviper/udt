@@ -151,7 +151,9 @@ enum UDTOpt
    UDT_STATE,		// current socket state, see UDTSTATUS, read only
    UDT_EVENT,		// current avalable events associated with the socket
    UDT_SNDDATA,		// size of data in the sending buffer
-   UDT_RCVDATA		// size of data available for recv
+   UDT_RCVDATA,		// size of data available for recv
+   UDT_CONNECTTIMEO,    // Connect timeout
+   UDT_RENDEZVOUSCONNECTTIMEO // Rendezvous connect timeout.
 };
 
 ////////////////////////////////////////////////////////////////////////////////
